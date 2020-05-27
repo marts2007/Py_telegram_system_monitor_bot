@@ -33,7 +33,7 @@ class Telegram:
             if not sm.checkSystem():
                 for drive in config.drives:
                     if drive['exceeded']:
-                        message = "{} \r\nLow free space on {}\r\n".format(socket.gethostname(),drive['path'])
+                        message = "{} \r\n\r\nLow free space on {}\r\n\r\n".format(socket.gethostname(),drive['path'])
                         message += open(drive['report_file'], 'r').read()
                         if not drive['alerted']:
                             self.send_message_all(message)
