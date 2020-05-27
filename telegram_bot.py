@@ -1,15 +1,19 @@
 import json
 from logger import log
 import http_fetcher as ht
+import system_monitor as sm
 from config import config
 import time
-
+import socket
 
 class Telegram:
     def do_tel_query(self, action: str = 'getMe', params: dict = {}):
         print(action)
         response = (ht.get_url('https://api.telegram.org/bot'+config.apikey+'/'+action, params))
         return response
+    def send_message_all(self,text):
+        for user in  config.subscribers:
+            self.send_message(user,text)
 
     def send_message(self, chat_id, text):
         response = self.do_tel_query('sendMessage', {'chat_id': chat_id,'text': text})
@@ -26,6 +30,15 @@ class Telegram:
 
     def mainloop(self):
         while 1:
+            if not sm.checkSystem():
+                for drive in config.drives:
+                    if drive['exceeded']:
+                        message = "{} \r\nLow free space on {}\r\n".format(socket.gethostname(),drive['path'])
+                        message += open(drive['report_file'], 'r').read()
+                        if not drive['alerted']:
+                            self.send_message_all(message)
+                            drive['alerted'] = 1
+                pass
             self.get_updates()
             time.sleep(5)
 
@@ -40,6 +53,7 @@ class Telegram:
                             print(resp)
                             self.parse_message(resp['message'])
         return response
+
 
     def parse_message(self,msg: dict = {}):
         if msg['text'].find('/subscribe') > -1:
