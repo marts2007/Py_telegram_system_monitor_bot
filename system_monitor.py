@@ -33,9 +33,12 @@ def checkDrives():
        if drv.percent > drive['maxusage']:
            drive['exceeded'] = 1
            result = False
+           config.store_config()
        else:
            drive['exceeded'] = 0
            drive['alerted']= 0
+           config.store_config()
+
     return result
 
 checkDrives()

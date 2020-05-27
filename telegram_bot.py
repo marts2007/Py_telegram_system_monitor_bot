@@ -38,6 +38,7 @@ class Telegram:
                         if not drive['alerted']:
                             self.send_message_all(message)
                             drive['alerted'] = 1
+                            config.store_config()
                 pass
             self.get_updates()
             time.sleep(5)
