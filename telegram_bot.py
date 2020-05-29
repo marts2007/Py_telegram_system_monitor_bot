@@ -5,6 +5,7 @@ import system_monitor as sm
 from config import config
 import time
 import socket
+import os.path
 
 class Telegram:
     def do_tel_query(self, action: str = 'getMe', params: dict = {}):
@@ -34,7 +35,8 @@ class Telegram:
                 for drive in config.drives:
                     if drive['exceeded']:
                         message = "{} \r\n\r\nLow free space on {}\r\n\r\n".format(socket.gethostname(),drive['path'])
-                        message += open(drive['report_file'], 'r').read()
+                        if os.path.isfile(drive['report_file']):
+                            message += open(drive['report_file'], 'r').read()
                         if not drive['alerted']:
                             self.send_message_all(message)
                             drive['alerted'] = 1
@@ -63,6 +65,13 @@ class Telegram:
         if msg['text'].find('/unsubscribe') > -1:
             config.change('subscribers', list(set(config.subscribers if config.subscribers else {}) - {msg['chat']['id']}))
             self.send_message(msg['chat']['id'], 'You have been unsubscribed')
+        if msg['text'].find('/info') > -1:
+            message = ''
+            for drive in config.drives:
+                if os.path.isfile(drive['report_file']):
+                    message += open(drive['report_file'], 'r').read()
+            if len(message) > 0:
+                self.send_message(msg['chat']['id'],message)
 
 
 t = Telegram()
