@@ -6,6 +6,7 @@ from config import config
 import time
 import socket
 import os.path
+import psutil
 
 class Telegram:
     def do_tel_query(self, action: str = 'getMe', params: dict = {}):
@@ -68,6 +69,10 @@ class Telegram:
         if msg['text'].find('/info') > -1:
             message = ''
             for drive in config.drives:
+                drv = psutil.disk_usage(drive['path'])
+                message = "Filesystem {} \r\nTotal: %d GiB" % drv.total / (2**30)
+                message += "\r\nUsed: %d GiB" % drv.used / (2**30)
+                message += "\r\nFree: %d GiB" % drv.free / (2**30)
                 if os.path.isfile(drive['report_file']):
                     message += open(drive['report_file'], 'r').read()
                     message += "\r\n\r\n"
