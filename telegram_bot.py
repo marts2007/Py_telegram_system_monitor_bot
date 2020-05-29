@@ -70,7 +70,7 @@ class Telegram:
             message = ''
             for drive in config.drives:
                 drv = psutil.disk_usage(drive['path'])
-                message += "Filesystem {} \r\nTotal: {} GiB\r\n".format(round(drive['path'], drv.total / (2**30),1))
+                message += "Filesystem {} \r\nTotal: {} GiB\r\n".format(drive['path'], round(drv.total / (2**30),1))
                 message += "Used: {} GiB\r\n".format(round(drv.used / (2**30),1))
                 message += "Free: {} GiB\r\n\r\n".format(round(drv.free / (2**30),1))
                 if os.path.isfile(drive['report_file']):
