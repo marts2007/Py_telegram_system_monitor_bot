@@ -70,6 +70,7 @@ class Telegram:
             for drive in config.drives:
                 if os.path.isfile(drive['report_file']):
                     message += open(drive['report_file'], 'r').read()
+                    message += "\r\n\r\n"
             if len(message) > 0:
                 self.send_message(msg['chat']['id'],message)
 
