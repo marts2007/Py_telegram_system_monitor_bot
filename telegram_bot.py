@@ -39,9 +39,9 @@ class Telegram:
                         if os.path.isfile(drive['report_file']):
                             message += open(drive['report_file'], 'r').read()
                         if not drive['alerted']:
-                            self.send_message_all(message)
                             drive['alerted'] = 1
                             config.store_config()
+                            self.send_message_all(message)
                 pass
             self.get_updates()
             time.sleep(5)
