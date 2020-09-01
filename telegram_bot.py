@@ -81,8 +81,7 @@ class Telegram:
             message += "Memory Usage:\r\n"
             for user in usertop:
                 memory_usage = round(userlist[user]['memory'], 2)
-                if memory_usage > 1:
-                    message += "{} {}%\r\n".format(user,memory_usage)
+                message += "{} {}%\r\n".format(user,memory_usage)
             if len(message) > 0:
                 self.send_message(msg['chat']['id'],message)
 
