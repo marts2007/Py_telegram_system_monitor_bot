@@ -77,10 +77,10 @@ class Telegram:
                     message += open(drive['report_file'], 'r').read()
                     message += "\r\n\r\n"
 
-            usertop, userlist =  sm.get_top_ram_users()
+            statusertop, statuserlist =  sm.get_top_ram_users()
             message += "Memory Usage:\r\n"
-            for user in usertop:
-                memory_usage = round(userlist[user]['memory'], 2)
+            for user in statusertop:
+                memory_usage = round(statuserlist[user]['memory'], 2)
                 message += "{} {}%\r\n".format(user,memory_usage)
             if len(message) > 0:
                 self.send_message(msg['chat']['id'],message)
