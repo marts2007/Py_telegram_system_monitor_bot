@@ -48,6 +48,7 @@ def get_top_ram_users():
     # Use a breakpoint in the code line below to debug your script.
     psutil.process_iter(attrs=None, ad_value=None)
     usertop = []
+    userlist = {}
     for proc in psutil.process_iter():
         try:
             # Get process name & pid from process object.
