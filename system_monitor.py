@@ -57,7 +57,7 @@ def get_top_ram_users():
             process['name'] = proc.name()
             process['id'] = proc.pid
             userName = proc.username()
-            process['memory_percent'] = proc.memory_percent()
+            process['memory_percent'] = proc.memory_percent(memtype="uss")
             process['status'] = proc.status()
             cpu = proc.status()
             if userName in userlist:
