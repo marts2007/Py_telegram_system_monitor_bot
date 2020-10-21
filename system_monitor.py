@@ -58,10 +58,10 @@ def get_sleeping_pids():
             # t=(proc.memory_info()).index('rss')
             process['memory_info'] = ((proc.memory_info()).rss / 1e9)
             process['status'] = proc.status()
-          #  if (process['status'] != 'running' and process['memory_info'] > 2):
+            if (process['status'] != 'running' and process['memory_info'] > 2):
                 #          print(userName,' ',process['id'],':',process['name'],':',process['status'],':',process['memory_info'],'GB')
-            proctop.append(process)
-            pidlist.append(process['id'])
+              proctop.append(process)
+              pidlist.append(process['id'])
         except (
         psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
