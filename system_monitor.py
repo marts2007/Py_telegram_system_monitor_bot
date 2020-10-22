@@ -51,16 +51,16 @@ def get_idle_pids():
             process['id'] = proc.pid
             userName = proc.username()
             process['username'] = userName
+            #if userName != 'mart': continue
             process['memory_percent'] = proc.memory_percent(memtype="rss")
             process['memory_info'] = ((proc.memory_info()).rss / 1e9)
             process['status'] = proc.status()
             process['foundtime'] = datetime.now().timestamp()
             if (process['status'] != 'running' and process['memory_info'] > 2):
-              pidlist.append(process['id'])
               if config.sleeping_pids.get(str(process['id'])) != None:
                 process['foundtime']=config.sleeping_pids[str(process['id'])]['foundtime']
               piddata[str(process['id'])]=process
-
+              pidlist.append(process['id'])
         except (
         psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass

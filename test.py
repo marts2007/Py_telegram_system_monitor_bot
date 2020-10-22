@@ -5,12 +5,16 @@ from config import config
 longlist = set()
 prevlist = set()
 procstat = {}
+
 from datetime import datetime, date, time
 
 
 piddata,pidlist=sm.get_idle_pids()
+pidlist.sort(key=lambda ar: -(piddata.get(str(ar)))['memory_info'])
 
-for id, process in piddata.items():
+os.system('clear')
+for  key in pidlist:
+     process=piddata[str(key)]
      datefrom=datetime.fromtimestamp(process['foundtime'])
      seconds = (datetime.now() - datefrom).seconds
      runing_time = "{}h {}m".format(int(seconds /  3600),int((seconds/60) % 60))
