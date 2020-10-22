@@ -95,7 +95,7 @@ class Telegram:
                 seconds = (datetime.now() - datefrom).seconds
                 runing_time = "{}h {}m".format(int(seconds / 3600),
                                                int((seconds / 60) % 60))
-                message += "user: {}\r\npid: {}\r\npname: {}\r\nRAM: {}G\r\nIDLE: {}\r\n".format(process['username'], process['id'],process['name'],round(process['memory_info'], 2),runing_time)
+                message += "user: {}\r\npid: {}\r\npname: {}\r\nRAM: {}G\r\nIDLE: {}\r\n\r\n".format(process['username'], process['id'],process['name'],round(process['memory_info'], 2),runing_time)
                 #print(process['username'], ' ',
                 #      process['id'], ':', process['name'],
                 #      ':', process['status'], ':',
