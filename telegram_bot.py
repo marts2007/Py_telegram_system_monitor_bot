@@ -7,6 +7,7 @@ import time
 import socket
 import os.path
 import psutil
+from datetime import datetime, date
 
 class Telegram:
     def do_tel_query(self, action: str = 'getMe', params: dict = {}):
@@ -82,8 +83,33 @@ class Telegram:
             for user in usertop:
                 memory_usage = round(userlist[user]['memory'], 2)
                 message += "{} {}%\r\n".format(user,memory_usage)
+
+            #geting sleeping bustards
+            piddata, pidlist = sm.get_idle_pids()
+            pidlist.sort(key=lambda ar: -(piddata.get(str(ar)))['memory_info'])
+            message += "\r\nTOP IDLE PIDs:\r\n"
+            os.system('clear')
+            for key in pidlist:
+                process = piddata[str(key)]
+                datefrom = datetime.fromtimestamp(process['foundtime'])
+                seconds = (datetime.now() - datefrom).seconds
+                runing_time = "{}h {}m".format(int(seconds / 3600),
+                                               int((seconds / 60) % 60))
+                message += "user: {}\r\npid: {}\r\npname: {}\r\nRAM: {}G\r\nIDLE: {}\r\n".format(process['username'], process['id'],process['name'],round(process['memory_info'], 2),runing_time)
+                #print(process['username'], ' ',
+                #      process['id'], ':', process['name'],
+                #      ':', process['status'], ':',
+                #      round(process['memory_info'], 2),
+                #      'GB', datefrom, ':', runing_time)
+
+
+
             if len(message) > 0:
                 self.send_message(msg['chat']['id'],message)
+
+
+
+
 
 
 t = Telegram()

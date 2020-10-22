@@ -61,6 +61,7 @@ def get_idle_pids():
                 process['foundtime']=config.sleeping_pids[str(process['id'])]['foundtime']
               piddata[str(process['id'])]=process
               pidlist.append(process['id'])
+            break
         except (
         psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
