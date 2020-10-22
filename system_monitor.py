@@ -51,7 +51,6 @@ def get_idle_pids():
             process['id'] = proc.pid
             userName = proc.username()
             process['username'] = userName
-            if userName != 'mart': continue;
             process['memory_percent'] = proc.memory_percent(memtype="rss")
             process['memory_info'] = ((proc.memory_info()).rss / 1e9)
             process['status'] = proc.status()
