@@ -1,9 +1,9 @@
 import psutil
 from logger import log
 from config import config
+from datetime import datetime, date, time
 
 userlist = {}
-
 conf = {
         'apikey': '',
         'user_list': [],
@@ -25,9 +25,7 @@ conf = {
 def checkSystem():
     return checkDrives()
 
-
 def checkDrives():
-    #print(conf['drives'])
     result = True
     for drive in config.drives:
        drv = psutil.disk_usage(drive['path'])
@@ -42,8 +40,8 @@ def checkDrives():
 
     return result
 
-def get_sleeping_pids():
-    proctop = []
+def get_idle_pids():
+    piddata = {}
     pidlist = []
     for proc in psutil.process_iter():
         try:
@@ -53,33 +51,32 @@ def get_sleeping_pids():
             process['id'] = proc.pid
             userName = proc.username()
             process['username'] = userName
-            #  if userName != 'mart': continue
+            if userName != 'mart': continue;
             process['memory_percent'] = proc.memory_percent(memtype="rss")
-            # t=(proc.memory_info()).index('rss')
             process['memory_info'] = ((proc.memory_info()).rss / 1e9)
             process['status'] = proc.status()
+            process['foundtime'] = datetime.now().timestamp()
             if (process['status'] != 'running' and process['memory_info'] > 2):
-                #          print(userName,' ',process['id'],':',process['name'],':',process['status'],':',process['memory_info'],'GB')
-              proctop.append(process)
               pidlist.append(process['id'])
+              if config.sleeping_pids.get(str(process['id'])) != None:
+                process['foundtime']=config.sleeping_pids[str(process['id'])]['foundtime']
+              piddata[str(process['id'])]=process
+
         except (
         psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
-    proctop.sort(key=lambda ar: -ar['memory_info'])
-    return [proctop,pidlist]
-
-
+    #proctop.sort(key=lambda ar: -ar['memory_info'])
+    config.change('sleeping_pids',piddata)
+    config.store_config()
+    return [piddata,pidlist]
 
 def get_top_ram_users():
-    # Use a breakpoint in the code line below to debug your script.
     psutil.process_iter(attrs=None, ad_value=None)
     usertop = []
     userlist = {}
     for proc in psutil.process_iter():
         try:
-            # Get process name & pid from process object.
             process = {}
-
             process['name'] = proc.name()
             process['id'] = proc.pid
             userName = proc.username()
@@ -88,7 +85,6 @@ def get_top_ram_users():
             cpu = proc.status()
             if userName in userlist:
                 userlist[userName]['memory'] += process['memory_percent']
-                #list = userlist[userName]['processes']
                 userlist[userName]['processes'].append(process)
                 userlist[userName]['processes'].sort(key=lambda ar: -ar['memory_percent'])
             else:
@@ -96,21 +92,9 @@ def get_top_ram_users():
                                         'processes' : [process]
                                       }
                 usertop.append(userName)
-            #print(processName , ' ::: ', processID,' ::: ', userName, ' ::: ', memory)
         except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess):
             pass
-    #usertop = list(userlist.items())
     usertop.sort(key=lambda ar: -userlist[ar]['memory'] )
     return usertop,userlist
-
-
-# Press the green button in the gutter to run the script.
-#if __name__ == '__main__':
-#    usertop=get_process_list()
-#    for user in usertop:
-#        memory_usage=round(userlist[user]['memory'],2)
-#        if memory_usage > 1:
-#            print(user,' : ',memory_usage,'%')
-
 
 checkDrives()

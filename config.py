@@ -2,13 +2,7 @@ import json
 from logger import log
 
 # loaded config
-
-# Read data from file:
-try:
-    conf = json.load(open("config.json"))
-except Exception as e:
-    log('Config load failed')
-    conf = {
+default_conf = {
         'apikey': '',
         'user_list': [],
         'drives': [  # drives to monitor
@@ -21,12 +15,20 @@ except Exception as e:
             },
 
         ],
+        'sleeping_pids' : {}
+        ,
         'proxies': {
             "https": "http://192.168.0.3:8118"
             # remove this line if you do not need proxy
         },
         'lastupdate_id': 0
     }
+# Read data from file:
+try:
+    conf = json.load(open("config.json"))
+except Exception as e:
+    log('Config load failed')
+    conf = default_conf
 
 
 class Config(object):
@@ -46,6 +48,8 @@ class Config(object):
 
     def get_property(self, property_name: str):
         if property_name not in self._config.keys():  # we don't want KeyError
+            if property_name in default_conf:
+                return default_conf[property_name]
             return None  # just return None if not found
         return self._config[property_name]
 
