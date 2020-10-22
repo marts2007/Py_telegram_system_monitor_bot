@@ -23,6 +23,7 @@ conf = {
     }
 
 def checkSystem():
+    get_idle_pids()
     return checkDrives()
 
 def checkDrives():
